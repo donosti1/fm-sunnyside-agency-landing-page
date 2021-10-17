@@ -1,10 +1,12 @@
 import React from "react";
-import {Container, Heading, Icon, Image, SimpleGrid, Stack, Text} from "@chakra-ui/react";
+import {Box, Container, Heading, Icon, Image, SimpleGrid, Stack, Text} from "@chakra-ui/react";
 import {FaFacebookSquare, FaInstagram, FaPinterest, FaTwitter} from "react-icons/fa";
 const App: React.FC = () => {
+  const [mobileMenuIsOpen, setMobileMenuIsOpen] = React.useState(false);
+  const toggleMobileMenu = () => setMobileMenuIsOpen(!mobileMenuIsOpen);
   const NavItems = (props: any) => {
     return (
-      <Text cursor="pointer" fontSize={18} paddingX={[4, 6]} paddingY={[4, 4]}>
+      <Text cursor="pointer" fontSize={18} paddingX={[4, 6]} paddingY={[3, 4]}>
         {props.children}
       </Text>
     );
@@ -13,19 +15,30 @@ const App: React.FC = () => {
     return (
       <Text
         _hover={{backgroundColor: "whiteAlpha.600", color: "white"}}
+        alignSelf={["center", "initial"]}
         as="button"
-        backgroundColor="white"
+        backgroundColor={["primary.500", "white"]}
         borderRadius="999"
         color="secondary.400"
         fontFamily="Fraunces"
         fontSize={14}
         fontWeight="700"
-        paddingX={[4, 8]}
+        paddingX={[8, 8]}
         paddingY={[4, 4]}
         textTransform="uppercase"
       >
         {props.children}
       </Text>
+    );
+  };
+  const NavBar = () => {
+    return (
+      <>
+        <NavItems>About</NavItems>
+        <NavItems>Services</NavItems>
+        <NavItems>Projects</NavItems>
+        <NavButton>Contact</NavButton>
+      </>
     );
   };
   const ImageGallery = (props: any) => {
@@ -103,9 +116,10 @@ const App: React.FC = () => {
           `url("/assets/mobile/` + props.image + `")`,
           `url("/assets/desktop/` + props.image + `")`,
         ]}
+        backgroundPosition="50%"
         backgroundSize={["cover", "inherit"]}
         color={props.color}
-        height={["600px", "550px"]}
+        height={["550px", "550px"]}
         textAlign="center"
       >
         <Text
@@ -113,11 +127,11 @@ const App: React.FC = () => {
           fontSize={[28, 24]}
           fontWeight="900"
           paddingBottom={["10px", "20px"]}
-          paddingTop={["380px", "360px"]}
+          paddingTop={["360px", "360px"]}
         >
           {props.title}
         </Text>
-        <Text fontSize={["lg", "inherit"]} width={["90%", "55%"]}>
+        <Text fontSize={["sm", "inherit"]} lineHeight={["1.6", "inherit"]} width={["90%", "55%"]}>
           {props.description}
         </Text>
       </Stack>
@@ -162,6 +176,26 @@ const App: React.FC = () => {
       </Text>
     );
   };
+  const MenuToggle = ({toggle, isOpen}: {toggle: any; isOpen: any}) => {
+    return (
+      <Box display={["block", "none"]} onClick={toggle}>
+        {isOpen ? <CloseIcon /> : <MenuIcon />}
+      </Box>
+    );
+  };
+  const CloseIcon = () => (
+    <svg fill="white" viewBox="0 0 18 18" width="24" xmlns="http://www.w3.org/2000/svg">
+      <title>Close</title>
+      <path d="M9.00023 7.58599L13.9502 2.63599L15.3642 4.04999L10.4142 8.99999L15.3642 13.95L13.9502 15.364L9.00023 10.414L4.05023 15.364L2.63623 13.95L7.58623 8.99999L2.63623 4.04999L4.05023 2.63599L9.00023 7.58599Z" />
+    </svg>
+  );
+
+  const MenuIcon = () => (
+    <svg fill="white" viewBox="0 0 20 20" width="24px" xmlns="http://www.w3.org/2000/svg">
+      <title>Menu</title>
+      <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+    </svg>
+  );
 
   return (
     <>
@@ -178,30 +212,57 @@ const App: React.FC = () => {
       >
         <Container maxWidth="container.xl" paddingY={[8, 6]} role="main">
           <Stack direction="row" justifyContent="space-between">
-            <Image height={[6, 8]} src="/assets/logo.svg" width={[32, 40]} />
-            <Stack color="white" direction={["column", "row"]}>
-              <NavItems>About</NavItems>
-              <NavItems>Services</NavItems>
-              <NavItems>Projects</NavItems>
-              <NavButton>Contact</NavButton>
+            <Image alt="logo" height={[6, 8]} src="/assets/logo.svg" width={[32, 40]} />
+            <Stack color="white" direction={["row", "row"]} display={["none", "flex"]}>
+              <NavBar />
             </Stack>
+            <MenuToggle isOpen={mobileMenuIsOpen} toggle={toggleMobileMenu} />
           </Stack>
         </Container>
+        {mobileMenuIsOpen && (
+          <Stack alignItems="center">
+            <Stack
+              _before={{
+                content: '""',
+                width: "0",
+                height: 0,
+                borderStyle: "solid",
+                borderWidth: "0 0 30px 30px",
+                borderColor: "#fffbf8 transparent",
+                position: "absolute",
+                right: 0,
+                top: "-29px",
+              }}
+              backgroundColor="#fffbf8"
+              color="secondary.600"
+              paddingBottom={8}
+              paddingTop={6}
+              position="fixed"
+              textAlign="center"
+              top={28}
+              width="90%"
+              zIndex="9990"
+            >
+              <NavBar />
+            </Stack>
+          </Stack>
+        )}
         <Stack alignItems="center">
           <Heading
             as="h1"
             color="white"
-            fontSize={[18, 48]}
+            fontSize={[36, 48]}
             fontWeight="900"
             letterSpacing={6}
             paddingY={[10, 10]}
+            textAlign="center"
             textTransform="uppercase"
           >
             We are creatives
           </Heading>
         </Stack>
         <Stack alignItems="center">
-          <Image height={[16, 24]} src="/assets/icon-arrow-down.svg" />
+          <Image alt="arrow" height={[28, 24]} src="/assets/icon-arrow-down.svg" />
         </Stack>
       </Stack>
       <SimpleGrid columns={[1, 2]}>
@@ -234,7 +295,7 @@ const App: React.FC = () => {
           title="Photography"
         />
       </SimpleGrid>
-      <Stack alignItems="center" backgroundColor="#fffbf8" paddingY={[8, 36]} spacing={0}>
+      <Stack alignItems="center" backgroundColor="#fffbf8" paddingY={[16, 36]} spacing={0}>
         <Heading
           as="h3"
           color="secondary.700"
@@ -277,7 +338,7 @@ const App: React.FC = () => {
         <Image alt="Gallery" src="/assets/desktop/image-gallery-sugarcubes.jpg" />
       </SimpleGrid>
       <Stack alignItems="center" backgroundColor="#90d4c5" color="primary.800" paddingY={12}>
-        <Image height={[8, 8]} src="/assets/logo_footer.svg" width={[40, 40]} />
+        <Image alt="logo" height={[8, 8]} src="/assets/logo_footer.svg" width={[40, 40]} />
         <Stack direction="row" paddingY={8}>
           <FooterItem>About</FooterItem>
           <FooterItem>Services</FooterItem>
